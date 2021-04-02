@@ -17,10 +17,10 @@ async def video(client, message):
         user = db.get_user(message.from_user.id)    # Получаем юзера из базы
 
         # Скачиваем видео из телеграмма
-        status = await message.reply_text("Скачал 0%")
-        await client.download_media(message=message.video, file_name=f"temp/{message.video.file_unique_id}.mp4",
+        status = await message.reply_text('Скачал 0%')
+        await client.download_media(message=message.video, file_name=f'temp/{message.video.file_unique_id}.mp4',
                                     progress=utils.download_callback, progress_args=(status,))
-        await status.edit_text("Обработка...")
+        await status.edit_text('Обработка...')
 
         # Запукаем ffmpeg для нашего видео
         os.system(
@@ -30,9 +30,9 @@ async def video(client, message):
             f'temp/{message.video.file_unique_id}_logo.mp4')
 
         # Загружаем видео обратно в телеграмм
-        await client.send_chat_action(message.chat.id, action="upload_video")
+        await client.send_chat_action(message.chat.id, action='upload_video')
         await client.send_video(chat_id=message.from_user.id,
-                                video=f"temp/{message.video.file_unique_id}_logo.mp4",
+                                video=f'temp/{message.video.file_unique_id}_logo.mp4',
                                 progress=utils.upload_callback, progress_args=(status,))
         await status.delete()
     except Exception as e:

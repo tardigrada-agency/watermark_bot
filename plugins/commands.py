@@ -22,7 +22,7 @@ async def adduser(client, message):
                                            ' - Добавлять новых пользователей командой /adduser {ID}\n',
                                   reply_markup=keyboards.menu_keyboard)
     else:
-        await message.reply_text("Юзер уже есть в базе :(")
+        await message.reply_text('Юзер уже есть в базе :(')
 
 
 @Client.on_message(filters.regex(pattern=r'^.*настройки.*$') & utils.check_user & utils.check_user )

@@ -29,18 +29,20 @@ Arch/Manjaro - `sudo pacman -S ffmpeg`
 
 
 ### Конфигурация
+Перейдите по ссылке https://my.telegram.org/auth?to=apps и создайте приложение.
 
 Создайте файл `configuration.ini` с текстом:
 
 ```
 [pyrogram]
-api_id = api_id_телеграмма
-api_hash = api_hash_телеграмма
-session_name = Названия_для_файла_сессиии
+api_id = ID_ПРИЛОЖЕНИЯ
+api_hash = HASH_ПРИЛОЖЕНИЯ
+session_name = НАЗВАНИЯ_ДЛЯ_ФАЙЛА_СЕССИИ
+admin_id = ИД_ЮЗЕРА_ТЕЛЕГРАММ
 
 [mongodb]
-name = Имя_базы
-host = mongodb+srv://ссылка_для_доступа_к_базе
+name = ИМЯ_БАЗЫ
+host = ССЫЛКА_ДЛЯ_ДОСТУПА_К_БАЗЕ
 ```
 
 

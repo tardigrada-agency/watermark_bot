@@ -1,8 +1,8 @@
 version: '3'
 services:
   watermark:
-    container_name: tardigrada/watermark
-    image:
+    container_name: watermark
+    image: tardigrada/watermark:latest
     volumes:
       - ./temp:/app/temp
       - ./sessions:/app/sessions

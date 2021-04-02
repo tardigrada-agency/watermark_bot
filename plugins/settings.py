@@ -71,9 +71,11 @@ async def size_callback(client, query):
     """
     Принимает callback от нажатия кнопок в keyboards.size_keyboard
     :param client:
+    :param client:
     :param query:
     :return:
     """
     user = db.get_user(query.from_user.id)
     user.size = query.data.split('=')[1]
+    user.save()
     await client.answer_callback_query(query.id, text=f'Размер установлен!')

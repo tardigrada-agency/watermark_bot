@@ -5,11 +5,11 @@ import utils
 
 
 @Client.on_message(filters.regex(pattern=r'^.*язык.*$') & filters.private & utils.check_user)
-async def language_select(client, message):
+async def language_select(_, message):
     """
     Присылает клавиатуру выбора языка логотипа
-    :param client:
-    :param message:
+    :param _: Клиент для работы с телеграмом, нам он не нужен
+    :param message: Сообщение пользователя которое запустило эту функцию
     :return:
     """
     await message.reply('Выбери язык:', reply_markup=keyboards.language_keyboard)
@@ -19,8 +19,8 @@ async def language_select(client, message):
 async def language_callback(client, query):
     """
     Принимает callback от нажатия кнопок в keyboards.language_keyboard
-    :param client:
-    :param query:
+    :param client: Клиент для работы с телеграмом
+    :param query: действие пользователя которое запустило эту функцию
     :return:
     """
     user = db.get_user(query.from_user.id)
@@ -31,11 +31,11 @@ async def language_callback(client, query):
 
 
 @Client.on_message(filters.regex(pattern='^.*цвет.*$') & filters.private & utils.check_user)
-async def color_select(client, message):
+async def color_select(_, message):
     """
     Присылает клавиатуру выбора размера логотипа
-    :param client:
-    :param message:
+    :param _: Клиент для работы с телеграмом, нам он не нужен
+    :param message: Сообщение пользователя которое запустило эту функцию
     :return:
     """
     await message.reply('Выбери цвет:', reply_markup=keyboards.color_keyboard)
@@ -45,8 +45,8 @@ async def color_select(client, message):
 async def color_callback(client, query):
     """
     Принимает callback от нажатия кнопок в keyboards.size_keyboard
-    :param client:
-    :param query:
+    :param client: Клиент для работы с телеграмом
+    :param query: действие пользователя которое запустило эту функцию
     :return:
     """
     user = db.get_user(query.from_user.id)
@@ -56,11 +56,11 @@ async def color_callback(client, query):
 
 
 @Client.on_message(filters.regex(pattern='^.*размер.*$') & filters.private & utils.check_user)
-async def size_select(client, message):
+async def size_select(_, message):
     """
     Присылает клавиатуру выбора размера логотипа
-    :param client:
-    :param message:
+    :param _: Клиент для работы с телеграмом, нам он не нужен
+    :param message: Сообщение пользователя которое запустило эту функцию
     :return:
     """
     await message.reply('Выбери цвет:', reply_markup=keyboards.size_keyboard)
@@ -70,9 +70,8 @@ async def size_select(client, message):
 async def size_callback(client, query):
     """
     Принимает callback от нажатия кнопок в keyboards.size_keyboard
-    :param client:
-    :param client:
-    :param query:
+    :param client: Клиент для работы с телеграмом
+    :param query: действие пользователя которое запустило эту функцию
     :return:
     """
     user = db.get_user(query.from_user.id)

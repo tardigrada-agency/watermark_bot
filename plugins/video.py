@@ -8,8 +8,8 @@ import os
 async def video(client, message):
     """
      Добавляет ватермарку на видео
-    :param client:
-    :param message:
+    :param client: Клиент для работы с телеграмом
+    :param message: Сообщение пользователя которое запустило эту функцию
     :return:
     """
     await utils.remove_video(message.video.file_unique_id)  # Удаляем видео с таким ид если оно уже почему-то есть
@@ -20,13 +20,15 @@ async def video(client, message):
         status = await message.reply_text('Скачал 0%')
         await client.download_media(message=message.video, file_name=f'temp/{message.video.file_unique_id}.mp4',
                                     progress=utils.download_callback, progress_args=(status,))
-        await status.edit_text('Обработка...')
 
         # Запукаем ffmpeg для нашего видео
+        await status.edit_text('Обработка...')
         os.system(
-            f'ffmpeg -i temp/{message.video.file_unique_id}.mp4 '
-            f'-i logo/{user.size}_{user.color}_{user.lang}.png '
+            # Добавляем наше фото и логотип выбранный пользователем
+            f'ffmpeg -i temp/{message.video.file_unique_id}.mp4 -i logo/{user.size}_{user.color}_{user.lang}.png '
+            # Логотип полупрозрачный на 75% 
             f'-filter_complex "[1]format=yuva444p,colorchannelmixer=aa=0.75[in2];[0][in2]overlay=10:10" '
+            # Указываем выходной файл
             f'temp/{message.video.file_unique_id}_logo.mp4')
 
         # Загружаем видео обратно в телеграмм

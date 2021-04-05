@@ -1,8 +1,4 @@
-test = {
-    'AAA': 'aaa',
-    'BBB': 'bbb',
-    'CCC': 'ccc'
-}
+import db
 
-for k,v in test.items():
-    print(k, v)
+users_settings = (f"{user.id}: {user.lang}, {user.color},{user.size}\n" for user in db.User.objects())
+print(*(users_settings))

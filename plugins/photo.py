@@ -10,8 +10,8 @@ import os
 async def photo(client, message):
     """
      Добавляет ватермарку на фото
-    :param client:
-    :param message:
+    :param client: Клиент для работы с телеграмом
+    :param message: Сообщение пользователя которое запустило эту функцию
     :return:
     """
     file = None
@@ -40,11 +40,16 @@ async def photo(client, message):
         img_size = Image.open(f'temp/{file_unique_id}.jpg').size
         logo_size = Image.open(f'logo/{user.size}_{user.color}_{user.lang}.png').size
         os.system(
+            # Добавляем наше фото и логотип выбранный пользователем
             f'ffmpeg -i temp/{file_unique_id}.jpg -i logo/{user.size}_{user.color}_{user.lang}.png '
-            f'-filter_complex "[1]format=yuva444p,colorchannelmixer=aa=0.75[in2];[0][in2]overlay={img_size[0] - logo_size[0] - 10 * user.size}:{img_size[1] - logo_size[1]}" '
+            # Логотип полупрозрачный на 75% 
+            f'-filter_complex "[1]format=yuva444p,colorchannelmixer=aa=0.75[in2];'
+            # Позицианируем логотип
+            f'[0][in2]overlay={img_size[0] - logo_size[0] - 10 * user.size}:{img_size[1] - logo_size[1]}" '
+            # Указываем выходной файл
             f'-q:v 1  temp/{file_unique_id}_logo.jpg')
 
-        # Отправляем фоток в телеграмм
+        # Отправляем фото в телеграмм
         await client.send_chat_action(message.chat.id, action='upload_document')
         await client.send_document(chat_id=message.from_user.id,
                                    document=f'temp/{file_unique_id}_logo.jpg',

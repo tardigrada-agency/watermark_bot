@@ -23,11 +23,15 @@ async def video(client, message):
 
         # Запукаем ffmpeg для нашего видео
         await status.edit_text('Обработка...')
+        video_size = utils.get_size_size(f'temp/{message.video.file_unique_id}.mp4')
         os.system(
             # Добавляем наше фото и логотип выбранный пользователем
-            f'ffmpeg -i temp/{message.video.file_unique_id}.mp4 -i logo/{user.size}_{user.color}_{user.lang}.png '
+            f'ffmpeg -i temp/{message.video.file_unique_id}.mp4 -i logo/{user.color}_{user.lang}.png '
             # Логотип полупрозрачный на 75% 
-            f'-filter_complex "[1]format=yuva444p,colorchannelmixer=aa=0.75[in2];[0][in2]overlay=10:10" '
+            f'-filter_complex "[1]format=yuva444p,colorchannelmixer=aa=0.75,'
+            # Меняем размер логотипа
+            f'scale={video_size[0]*0.1*user.size}:-1[in2];[0][in2]overlay='
+            f'{video_size[0]*0.005}:{video_size[0]*0.005}" '
             # Указываем выходной файл
             f'temp/{message.video.file_unique_id}_logo.mp4')
 

@@ -5,10 +5,10 @@ import utils
 
 
 @Client.on_message(filters.regex(pattern=r'^.*язык.*$') & filters.private & utils.check_user)
-async def language_select(client, message):
+async def language_select(_, message):
     """
     Присылает клавиатуру выбора языка логотипа
-    :param client: Клиент для работы с телеграмом
+    :param _: Клиент для работы с телеграмом, нам он не нужен
     :param message: Сообщение пользователя которое запустило эту функцию
     :return:
     """
@@ -31,10 +31,10 @@ async def language_callback(client, query):
 
 
 @Client.on_message(filters.regex(pattern='^.*цвет.*$') & filters.private & utils.check_user)
-async def color_select(client, message):
+async def color_select(_, message):
     """
     Присылает клавиатуру выбора размера логотипа
-    :param client: Клиент для работы с телеграмом
+    :param _: Клиент для работы с телеграмом, нам он не нужен
     :param message: Сообщение пользователя которое запустило эту функцию
     :return:
     """
@@ -56,10 +56,10 @@ async def color_callback(client, query):
 
 
 @Client.on_message(filters.regex(pattern='^.*размер.*$') & filters.private & utils.check_user)
-async def size_select(client, message):
+async def size_select(_, message):
     """
     Присылает клавиатуру выбора размера логотипа
-    :param client: Клиент для работы с телеграмом
+    :param _: Клиент для работы с телеграмом, нам он не нужен
     :param message: Сообщение пользователя которое запустило эту функцию
     :return:
     """

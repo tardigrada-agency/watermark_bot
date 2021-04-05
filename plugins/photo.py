@@ -1,5 +1,4 @@
 from pyrogram import Client, filters
-from PIL import Image
 import utils
 import db
 import os
@@ -37,15 +36,19 @@ async def photo(client, message):
 
         # Обработка фотографии
         await status.edit_text('Обработка...')
-        img_size = Image.open(f'temp/{file_unique_id}.jpg').size
-        logo_size = Image.open(f'logo/{user.size}_{user.color}_{user.lang}.png').size
+        img_size = utils.get_size_size(f'temp/{file_unique_id}.jpg')
+        logo_size = utils.get_size_size(f'logo/{user.color}_{user.lang}.png')
         os.system(
             # Добавляем наше фото и логотип выбранный пользователем
-            f'ffmpeg -i temp/{file_unique_id}.jpg -i logo/{user.size}_{user.color}_{user.lang}.png '
+            f'ffmpeg -i temp/{file_unique_id}.jpg -i logo/{user.color}_{user.lang}.png '
             # Логотип полупрозрачный на 75% 
-            f'-filter_complex "[1]format=yuva444p,colorchannelmixer=aa=0.75[in2];'
-            # Позицианируем логотип
-            f'[0][in2]overlay={img_size[0] - logo_size[0] - 10 * user.size}:{img_size[1] - logo_size[1]}" '
+            f'-filter_complex "[1]format=yuva444p,colorchannelmixer=aa=0.75,'
+            # Меняем размер логотипа
+            f'scale={img_size[0]*0.1*user.size}:-1[in2];'
+            # Позиционируем логотип
+            f'[0][in2]overlay='
+            # рассчитываем отступы относительно разрешения фото и логотипа
+            f'{img_size[0] - img_size[0]*0.1*user.size - img_size[0]*0.005}:{img_size[1] - int(logo_size[1]*(img_size[0]*0.1*user.size)/logo_size[0]) - img_size[0]*0.005}" '
             # Указываем выходной файл
             f'-q:v 1  temp/{file_unique_id}_logo.jpg')
 

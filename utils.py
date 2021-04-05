@@ -1,3 +1,5 @@
+from hachoir.metadata import extractMetadata
+from hachoir.parser import createParser
 from pyrogram import filters
 import os
 import db
@@ -54,3 +56,18 @@ async def upload_callback(current, total, status):
     :return:
     """
     await status.edit_text(f'Загрузил {int((current/total)*100)}%')
+
+
+def get_size_size(file_path: str) -> list or Exception:
+    """
+    Получает разрешение файла
+    :param file_path: Путь к файлу
+    :return: Количество пикселей по высоте, количество пикселей по ширине
+    """
+    parser = createParser(file_path)
+    with parser:
+        try:
+            metadata = extractMetadata(parser)
+        except Exception as err:
+            return err
+    return [metadata.getValues('width')[0], metadata.getValues('height')[0]]

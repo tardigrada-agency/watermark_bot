@@ -44,7 +44,7 @@ async def settings(_, message):
 async def users(client, message):
     """
     Чтение настроек логотипа из базы
-    :param _: Клиент для работы с телеграмом
+    :param client: Клиент для работы с телеграмом
     :param message: Сообщение пользователя которое запустило эту функцию
     :return:
     """

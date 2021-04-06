@@ -15,7 +15,7 @@ async def language_select(_, message):
     await message.reply('Выбери язык:', reply_markup=keyboards.language_keyboard)
 
 
-@Client.on_callback_query(utils.language & utils.check_user)
+@Client.on_callback_query(utils.new_language & utils.check_user)
 async def language_callback(client, query):
     """
     Принимает callback от нажатия кнопок в keyboards.language_keyboard
@@ -41,7 +41,7 @@ async def color_select(_, message):
     await message.reply('Выбери цвет:', reply_markup=keyboards.color_keyboard)
 
 
-@Client.on_callback_query(utils.color & utils.check_user)
+@Client.on_callback_query(utils.new_color & utils.check_user)
 async def color_callback(client, query):
     """
     Принимает callback от нажатия кнопок в keyboards.size_keyboard
@@ -66,7 +66,7 @@ async def size_select(_, message):
     await message.reply('Выбери цвет:', reply_markup=keyboards.size_keyboard)
 
 
-@Client.on_callback_query(utils.size & utils.check_user)
+@Client.on_callback_query(utils.new_size & utils.check_user)
 async def size_callback(client, query):
     """
     Принимает callback от нажатия кнопок в keyboards.size_keyboard

@@ -7,33 +7,22 @@ import os
 @Client.on_message(filters.video & utils.check_user)
 async def video(client, message):
     """
-     Добавляет ватермарку на видео
+    Добавляет ватермарку на видео
     :param client: Клиент для работы с телеграмом
     :param message: Сообщение пользователя которое запустило эту функцию
     :return:
     """
-    await utils.remove_video(message.video.file_unique_id)  # Удаляем видео с таким ид если оно уже почему-то есть
+    utils.remove_video(message.video.file_unique_id)  # Удаляем видео с таким ид если оно уже почему-то есть
     try:
         user = db.get_user(message.from_user.id)    # Получаем юзера из базы
 
         # Скачиваем видео из телеграмма
         status = await message.reply_text('Скачал 0%')
-        await client.download_media(message=message.video, file_name=f'temp/{message.video.file_unique_id}.mp4',
-                                    progress=utils.download_callback, progress_args=(status,))
+        await download_video(message.video, client, status)
 
         # Запукаем ffmpeg для нашего видео
         await status.edit_text('Обработка...')
-        video_size = utils.get_size_size(f'temp/{message.video.file_unique_id}.mp4')
-        os.system(
-            # Добавляем наше фото и логотип выбранный пользователем
-            f'ffmpeg -i temp/{message.video.file_unique_id}.mp4 -i logo/{user.color}_{user.lang}.png '
-            # Логотип полупрозрачный на 75% 
-            f'-filter_complex "[1]format=yuva444p,colorchannelmixer=aa=0.75,'
-            # Меняем размер логотипа
-            f'scale={video_size[0]*0.1*user.size}:-1[in2];[0][in2]overlay='
-            f'{video_size[0]*0.005}:{video_size[0]*0.005}" '
-            # Указываем выходной файл
-            f'temp/{message.video.file_unique_id}_logo.mp4')
+        await utils.logo_on_video(f'{message.video.file_unique_id}.mp4', user.size, user.color, user.lang)
 
         # Загружаем видео обратно в телеграмм
         await client.send_chat_action(message.chat.id, action='upload_video')
@@ -43,4 +32,47 @@ async def video(client, message):
         await status.delete()
     except Exception as e:
         await message.reply_text(f'ERROR: {str(e)}')
-    await utils.remove_video(message.video.file_unique_id)   # Удаляем видео, оно нам больше не нужно
+    utils.remove_video(message.video.file_unique_id)   # Удаляем видео, оно нам больше не нужно
+
+
+@Client.on_message(utils.document_video & utils.check_user)
+async def video_document(client, message):
+    """
+    Добавляет ватермарку на видео как документ
+    :param client: Клиент для работы с телеграмом
+    :param message: Сообщение пользователя которое запустило эту функцию
+    :return:
+    """
+    utils.remove_video(message.document.file_unique_id)  # Удаляем видео с таким ид если оно уже почему-то есть
+    try:
+        user = db.get_user(message.from_user.id)    # Получаем юзера из базы
+
+        # Скачиваем видео из телеграмма
+        status = await message.reply_text('Скачал 0%')
+        await download_video(message.document, client, status)
+
+        # Запукаем ffmpeg для нашего видео
+        await utils.logo_on_video(f'{message.document.file_unique_id}.mp4', user.size, user.color, user.lang)
+
+        # Загружаем видео обратно в телеграмм
+        await client.send_chat_action(message.chat.id, action='upload_video')
+        await client.send_document(chat_id=message.from_user.id,
+                                   document=f'temp/{message.document.file_unique_id}_logo.mp4',
+                                   file_name=f'{message.document.file_name.split(".")[0]}_logo.mp4',
+                                   progress=utils.upload_callback, progress_args=(status,))
+        await status.delete()
+    except Exception as e:
+        await message.reply_text(f'ERROR: {str(e)}')
+    utils.remove_video(message.document.file_unique_id)   # Удаляем видео, оно нам больше не нужно
+
+
+async def download_video(file, client, status):
+    """
+    Функция для скачивания файла с сервера телеграмм
+    :param status: : Сообщение чтобы показывать юзеру что происходит
+    :param file: Файл который нужно скачать
+    :param client: Клиент для общения с телеграммом
+    :return:
+    """
+    await client.download_media(message=file, file_name=f'temp/{file.file_unique_id}.mp4',
+                                progress=utils.download_callback, progress_args=(status,))

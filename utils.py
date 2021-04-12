@@ -67,7 +67,10 @@ async def download_callback(current, total, status):
     :param status:
     :return:
     """
-    await status.edit_text(f'Скачал {int((current / total) * 100)}%')
+    try:
+        await status.edit_text(f'Скачал {int((current / total) * 100)}%')
+    except Exception as e:
+        print(e)
 
 
 async def upload_callback(current, total, status):
@@ -78,7 +81,10 @@ async def upload_callback(current, total, status):
     :param status:
     :return:
     """
-    await status.edit_text(f'Загрузил {int((current / total) * 100)}%')
+    try:
+        await status.edit_text(f'Загрузил {int((current / total) * 100)}%')
+    except Exception as e:
+        print(e)
 
 
 def get_size_size(file_path: str) -> list or Exception:

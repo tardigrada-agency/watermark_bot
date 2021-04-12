@@ -16,62 +16,61 @@ async def zip_file(client, message):
     :return:
     """
     utils.remove_zip(message.document.file_unique_id)  # Удаляем архив с таким ид если оно уже почему-то есть
-    try:
-        user = db.get_user(message.from_user.id)  # Получаем юзера из базы
-        re_photo = re.compile(r'(^.*\.)jpe?g|png')
-        re_video = re.compile(r'(^.*\.)mov|mp4|avi')
+    # try:
+    user = db.get_user(message.from_user.id)  # Получаем юзера из базы
+    re_photo = re.compile(r'(^.*\.)jpe?g|png')
+    re_video = re.compile(r'(^.*\.)mov|mp4|avi')
 
-        # Скачиваем архив
-        status = await message.reply_text('Скачал 0%')
-        await download_zip(message.document, client, status)
+    # Скачиваем архив
+    status = await message.reply_text('Скачал 0%')
+    await download_zip(message.document, client, status)
 
-        # Раскрываем архив
-        await status.edit_text('extracting....')
-        with zipfile.ZipFile(f'temp/{message.document.file_unique_id}.zip', 'r') as zipObj:
-            zipObj.extractall(f'temp/{message.document.file_unique_id}')
+    # Раскрываем архив
+    await status.edit_text('extracting....')
+    with zipfile.ZipFile(f'temp/{message.document.file_unique_id}.zip', 'r') as zipObj:
+        zipObj.extractall(f'temp/{message.document.file_unique_id}')
 
-        os.mkdir(f'temp/{message.document.file_unique_id}_logo')  # Создаем папку для файлов с логотипом
+    os.mkdir(f'temp/{message.document.file_unique_id}_logo')  # Создаем папку для файлов с логотипом
 
-        #   Для всех файлов из архива запускам ffmpeg
-        path = f'temp/{message.document.file_unique_id}'
-        for root, dirs, files in os.walk(path):
-            for file in files:
-                print(root.replace(f"temp/{message.document.file_unique_id}", ""))
-                if re_photo.match(file.lower()):
-                    await status.edit_text(f'Обработка фотографии {file}')
-                    await utils.logo_on_photo(f'{message.document.file_unique_id}'
-                                              f'{root.replace(f"temp/{message.document.file_unique_id}", "")}/'
-                                              f'{file}', user.size,
-                                              user.color, user.lang)
-                    shutil.move(f'temp/{message.document.file_unique_id}'
-                                f'{root.replace(f"temp/{message.document.file_unique_id}", "")}/'
-                                f'{file.split(".")[0]}_logo.jpg',
-                                f'temp/{message.document.file_unique_id}_logo/{file}')
-                if re_video.match(file.lower()):
-                    await status.edit_text(f'Обработка видео {file}')
-                    await utils.logo_on_video(f'{message.document.file_unique_id}'
-                                              f'{root.replace(f"temp/{message.document.file_unique_id}", "")}/'
-                                              f'{file}', user.size,
-                                              user.color, user.lang)
-                    shutil.move(f'temp/'
-                                f'{message.document.file_unique_id}'
-                                f'{root.replace(f"temp/{message.document.file_unique_id}", "")}/'
-                                f'{file.split(".")[0]}_logo.mp4',
-                                f'temp/{message.document.file_unique_id}_logo/{file}')
+    #   Для всех файлов из архива запускам ffmpeg
+    path = f'temp/{message.document.file_unique_id}'
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if re_photo.match(file.lower()):
+                await status.edit_text(f'Обработка фотографии {file}')
+                await utils.logo_on_photo(f'{message.document.file_unique_id}'
+                                          f'{root.replace(f"temp/{message.document.file_unique_id}", "")}/'
+                                          f'{file}', user.size,
+                                          user.color, user.lang)
+                shutil.move(f'temp/{message.document.file_unique_id}'
+                            f'{root.replace(f"temp/{message.document.file_unique_id}", "")}/'
+                            f'{file.split(".")[0]}_logo.jpg',
+                            f'temp/{message.document.file_unique_id}_logo/{file}')
+            if re_video.match(file.lower()):
+                await status.edit_text(f'Обработка видео {file}')
+                await utils.logo_on_video(f'{message.document.file_unique_id}'
+                                          f'{root.replace(f"temp/{message.document.file_unique_id}", "")}/'
+                                          f'{file}', user.size,
+                                          user.color, user.lang)
+                shutil.move(f'temp/'
+                            f'{message.document.file_unique_id}'
+                            f'{root.replace(f"temp/{message.document.file_unique_id}", "")}/'
+                            f'{file.split(".")[0]}_logo.mp4',
+                            f'temp/{message.document.file_unique_id}_logo/{file}')
 
-        # Создаем новый архив из файлоы с логотипом
-        await status.edit_text(f'Архивация...')
-        await zip_dir(message.document.file_unique_id)
+    # Создаем новый архив из файлоы с логотипом
+    await status.edit_text(f'Архивация...')
+    await zip_dir(message.document.file_unique_id)
 
-        # Отправляем архив
-        await client.send_chat_action(message.chat.id, action='upload_document')
-        await client.send_document(chat_id=message.from_user.id,
-                                   document=f'temp/{message.document.file_unique_id}_logo.zip',
-                                   file_name=f'{message.document.file_name.split(".")[0]}_logo.zip',
-                                   progress=utils.upload_callback, progress_args=(status,))
-        await status.delete()
-    except Exception as e:
-        await message.reply_text(f'ERROR: {str(e)}')
+    # Отправляем архив
+    await client.send_chat_action(message.chat.id, action='upload_document')
+    await client.send_document(chat_id=message.from_user.id,
+                               document=f'temp/{message.document.file_unique_id}_logo.zip',
+                               file_name=f'{message.document.file_name.split(".")[0]}_logo.zip',
+                               progress=utils.upload_callback, progress_args=(status,))
+    await status.delete()
+    # except Exception as e:
+    #     await message.reply_text(f'ERROR: {str(e)}')
     utils.remove_zip(message.document.file_unique_id)  # Удаляем архив, оно нам больше не нужно
 
 

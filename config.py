@@ -1,7 +1,7 @@
 import configparser
 
 config = configparser.ConfigParser()
-config.read("configuration.ini")
+config.read('configuration.ini')
 
 
 def get(s: str):

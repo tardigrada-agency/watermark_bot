@@ -17,7 +17,6 @@ async def send_welcome(_, message):
         await message.reply_text(text, reply_markup=keyboards.menu_keyboard)
     else:
         await message.reply_text(text)
-        await message.reply_text(text)
 
 
 @Client.on_message(~utils.check_user & filters.private)

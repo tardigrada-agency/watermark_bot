@@ -142,7 +142,7 @@ async def logo_on_video(file, size, color, lang):
     """
     video_size = get_size_size(f'temp/{file}')
     logo_size = get_size_size(f'logo/{color}_{lang}.png')
-    new_logo_size = int(video_size[0] * 0.03 + 0.025 * size)
+    new_logo_size = int(video_size[0] * (0.03 + 0.025 * size))
     sp.call(['ffmpeg',
              # Добавляем наше фото и логотип выбранный пользователем
              '-i', f'temp/{file}', '-i', f'logo/{color}_{lang}.png', '-filter_complex',

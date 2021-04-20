@@ -1,10 +1,17 @@
 version: '3'
 services:
-  watermark:
-    container_name: watermark
-    image: tardigrada/watermark:latest
-    volumes:
-      - ./temp:/app/temp
-      - ./sessions:/app/sessions
-      - ./configuration.ini:/app/configuration.ini
-    restart: always
+    mongo:
+      image: mongo
+      restart: always
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: root
+        MONGO_INITDB_ROOT_PASSWORD: example
+   watermark:
+      container_name: watermark
+      image: tardigrada/watermark:latest
+      volumes:
+        - ./temp:/app/temp
+        - ./sessions:/app/sessions
+        - ./configuration.ini:/app/configuration.ini
+      restart: always
+

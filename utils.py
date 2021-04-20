@@ -113,18 +113,20 @@ async def logo_on_photo(file, size, color, lang):
     """
     img_size = get_size_size(f'temp/{file}')
     logo_size = get_size_size(f'logo/{color}_{lang}.png')
+    new_logo_size = int(img_size[0] * (0.03 + 0.025 * size))
+    print(new_logo_size)
     sp.call([
         # Добавляем наше фото и логотип выбранный пользователем
         'ffmpeg', '-i', f'temp/{file}', '-i', f'logo/{color}_{lang}.png',
         # Логотип полупрозрачный на 75% 
         '-filter_complex', '[1]format=yuva444p,colorchannelmixer=aa=0.75,'
         # Меняем размер логотипа
-        f'scale={int(img_size[0] * 0.1 * size)}:-1[in2];'
+        f'scale={new_logo_size}:-1[in2];'
         # Позиционируем логотип
         f'[0][in2]overlay='
         # рассчитываем отступы относительно разрешения фото и логотипа
-        f'{int(img_size[0] - img_size[0] * 0.1 * size - img_size[0] * 0.005)}:'
-        f'{int(img_size[1] - int(logo_size[1] * (img_size[0] * 0.1 * size) / logo_size[0]) - img_size[0] * 0.005)}',
+        f'{int(img_size[0] - new_logo_size - img_size[0] * 0.005)}:'
+        f'{int(img_size[1] - int(logo_size[1] * new_logo_size / logo_size[0]) - img_size[0] * 0.005)}',
         # Указываем выходной файл
         '-q:v', '1',  f'temp/{file.split(".")[0]}_logo.jpg'])
 
@@ -139,13 +141,16 @@ async def logo_on_video(file, size, color, lang):
     :return:
     """
     video_size = get_size_size(f'temp/{file}')
+    logo_size = get_size_size(f'logo/{color}_{lang}.png')
+    new_logo_size = int(video_size[0] * 0.03 + 0.025 * size)
     sp.call(['ffmpeg',
              # Добавляем наше фото и логотип выбранный пользователем
              '-i', f'temp/{file}', '-i', f'logo/{color}_{lang}.png', '-filter_complex',
              # Логотип полупрозрачный на 75%
              '[1]format=yuva444p,colorchannelmixer=aa=0.75,'
              # Меняем размер логотипа
-             f'scale={video_size[0] * 0.1 * size}:-1[in2];[0][in2]overlay='
-             f'{video_size[0] * 0.005}:{video_size[0] * 0.005}',
+             f'scale={new_logo_size}:-1[in2];[0][in2]overlay='
+             f'{int(video_size[0] - new_logo_size - video_size[0] * 0.005)}:'
+             f'{int(video_size[1] - int(logo_size[1] * new_logo_size / logo_size[0]) - video_size[0] * 0.005)}',
              # Указываем выходной файл
              f'temp/{file.split(".")[0]}_logo.mp4'])

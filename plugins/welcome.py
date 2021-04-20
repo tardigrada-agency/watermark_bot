@@ -12,7 +12,7 @@ async def send_welcome(_, message):
     :param message:
     :return:
     """
-    text = f"Привет!\nЯ лого бот ИА 'Тардиграда'!\nТвой ид: {message.from_user.id}\n"
+    text = f"Привет!\nЯ лого бот созданый ИА 'Тардиграда'!\nТвой ид: {message.from_user.id}\n"
     if db.check_user(message.from_user.id):
         await message.reply_text(text, reply_markup=keyboards.menu_keyboard)
     else:

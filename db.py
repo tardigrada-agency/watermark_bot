@@ -12,6 +12,7 @@ class User(Document):
     color = StringField(default="white")
     lang = StringField(default="rus")
     size = IntField(default=2)
+    mode = StringField(default='right_down')
 
 
 def add_user(user_id):
@@ -24,7 +25,8 @@ def add_user(user_id):
         id=user_id,
         color="white",
         lang="rus",
-        size=2
+        size=2,
+        mode='right_down'
     )
     user.save()
 

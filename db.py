@@ -10,10 +10,11 @@ connect(mongo_config['name'], host=mongo_config['host'])
 
 class User(Document):
     id = StringField(primary_key=True)
-    color = StringField(default='white')
-    lang = StringField(default='rus')
-    size = IntField(default=2)
+    color = StringField(default=modes.default['color'])
+    lang = StringField(default=modes.default['lang'])
+    size = IntField(default=modes.default['size'])
     mode = StringField(default=next(iter(modes.modes)))
+
 
 def add_user(user_id):
     """
@@ -23,9 +24,9 @@ def add_user(user_id):
     """
     user = User(
         id=user_id,
-        color="white",
-        lang="rus",
-        size=2,
+        color=modes.default['color'],
+        lang=modes.default['lang'],
+        size=modes.default['size'],
         mode=next(iter(modes.modes))
     )
     user.save()

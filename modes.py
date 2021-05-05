@@ -5,6 +5,12 @@ def get_new_logo_size(_, img_size, scale):
     return int(img_size[0] * 0.1 * scale + random.randint(-5, 5) / 100)
 
 
+default = {
+    'color': 'white',
+    'lang': 'eng',
+    'size': 2
+}
+
 modes = {
     'right_bottom':
         {

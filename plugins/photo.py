@@ -22,7 +22,8 @@ async def photo(client, message):
         await download_photo(message.photo, client, status)
 
         # Обработка фотографии
-        await utils.logo_on_photo(f'{message.photo.file_unique_id}.jpg', user.size, user.color, user.lang)
+        await utils.draw_logo_on_photo(f'{message.photo.file_unique_id}.jpg', user.size, user.color, user.lang,
+                                       user.mode)
 
         # Отправляем фото в телеграмм
         await client.send_chat_action(message.chat.id, action='upload_photo')
@@ -55,7 +56,8 @@ async def photo_document(client, message):
 
         # Обработка фотографии
         await status.edit_text('Обработка...')
-        await utils.logo_on_photo(f'{message.document.file_unique_id}.jpg', user.size, user.color, user.lang)
+        await utils.draw_logo_on_photo(f'{message.document.file_unique_id}.jpg', user.size, user.color, user.lang,
+                                       user.mode)
 
         # Отправляем фото в телеграмм
         await client.send_chat_action(message.chat.id, action='upload_document')

@@ -37,7 +37,9 @@ async def settings(_, message):
     user = db.get_user(message.from_user.id)    # получаем юзера из базы по его ид
     await message.reply_text(f'цвет: {user.color}\n'
                              f'размер: {user.size}\n'
-                             f'язык: {user.lang}')
+                             f'язык: {user.lang}\n'
+                             f'режим: {user.mode}',
+                             reply_markup=keyboards.menu_keyboard)
 
 
 @Client.on_message(filters.command(commands='users') & utils.check_user)
@@ -50,8 +52,9 @@ async def users(client, message):
     """
     users_settings: str = ''
     for user in db.User.objects:
-        users_settings += f'{user.id}: {user.lang}, {user.color}, S{user.size}\n'
-    await client.send_message(message.chat.id, users_settings)
+        users_settings += f'{user.id}: {user.lang}, {user.color}, {user.size}, {user.mode}\n'
+    await client.send_message(message.chat.id, users_settings,
+                              reply_markup=keyboards.menu_keyboard)
 
 
 @Client.on_message(filters.command(commands='keyboard') & utils.check_user & filters.private)

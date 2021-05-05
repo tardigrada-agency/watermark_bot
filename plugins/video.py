@@ -1,7 +1,6 @@
 from pyrogram import Client, filters
 import utils
 import db
-import os
 
 
 @Client.on_message(filters.video & utils.check_user)
@@ -22,7 +21,8 @@ async def video(client, message):
 
         # Запукаем ffmpeg для нашего видео
         await status.edit_text('Обработка...')
-        await utils.logo_on_video(f'{message.video.file_unique_id}.mp4', user.size, user.color, user.lang)
+        await utils.draw_logo_on_video(f'{message.video.file_unique_id}.mp4', user.size, user.color, user.lang,
+                                       user.mode)
 
         # Загружаем видео обратно в телеграмм
         await client.send_chat_action(message.chat.id, action='upload_video')
@@ -52,7 +52,8 @@ async def video_document(client, message):
         await download_video(message.document, client, status)
 
         # Запукаем ffmpeg для нашего видео
-        await utils.logo_on_video(f'{message.document.file_unique_id}.mp4', user.size, user.color, user.lang)
+        await utils.draw_logo_on_video(f'{message.document.file_unique_id}.mp4', user.size, user.color, user.lang,
+                                       user.mode)
 
         # Загружаем видео обратно в телеграмм
         await client.send_chat_action(message.chat.id, action='upload_video')

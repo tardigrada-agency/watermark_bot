@@ -2,6 +2,7 @@ from mongoengine.fields import StringField, IntField
 from mongoengine import Document
 from mongoengine import connect
 import config
+import modes
 
 mongo_config = config.get('mongodb')
 connect(mongo_config['name'], host=mongo_config['host'])
@@ -9,9 +10,10 @@ connect(mongo_config['name'], host=mongo_config['host'])
 
 class User(Document):
     id = StringField(primary_key=True)
-    color = StringField(default="white")
-    lang = StringField(default="rus")
+    color = StringField(default='white')
+    lang = StringField(default='rus')
     size = IntField(default=2)
+    mode = StringField(default=next(iter(modes.modes)))
 
 
 def add_user(user_id):
@@ -24,7 +26,8 @@ def add_user(user_id):
         id=user_id,
         color="white",
         lang="rus",
-        size=2
+        size=2,
+        mode=next(iter(modes.modes))
     )
     user.save()
 

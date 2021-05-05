@@ -78,3 +78,28 @@ async def size_callback(client, query):
     user.size = query.data.split('=')[1]
     user.save()
     await client.answer_callback_query(query.id, text=f'Размер установлен!')
+
+
+@Client.on_message(filters.regex(pattern='^.*режим.*$') & filters.private & utils.check_user)
+async def mode_select(_, message):
+    """
+    Присылает клавиатуру выбора режима логотипа
+    :param _: Клиент для работы с телеграмом, нам он не нужен
+    :param message: Сообщение пользователя которое запустило эту функцию
+    :return:
+    """
+    await message.reply('Выбери режим добавления логотипа:', reply_markup=keyboards.modes_keyboard)
+
+
+@Client.on_callback_query(utils.new_mode & utils.check_user)
+async def mode_callback(client, query):
+    """
+    Принимает callback от нажатия кнопок в keyboards.modes_keyboard
+    :param client: Клиент для работы с телеграмом
+    :param query: действие пользователя которое запустило эту функцию
+    :return:
+    """
+    user = db.get_user(query.from_user.id)
+    user.mode = query.data.split('=')[1]
+    user.save()
+    await client.answer_callback_query(query.id, text=f'Режим установлен!')

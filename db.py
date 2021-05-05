@@ -15,7 +15,6 @@ class User(Document):
     size = IntField(default=2)
     mode = StringField(default=next(iter(modes.modes)))
 
-
 def add_user(user_id):
     """
     Добавляет юзера в базу
